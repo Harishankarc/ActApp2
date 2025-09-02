@@ -1,4 +1,6 @@
 import 'package:actapp/backend/api.dart';
+import 'package:actapp/frontend/talents.dart';
+import 'package:actapp/routetransitions.dart';
 import 'package:actapp/widgets/appButton.dart';
 import 'package:actapp/widgets/appText.dart';
 import 'package:actapp/widgets/appTextFeild.dart';
@@ -161,6 +163,7 @@ class _DashBoardState extends State<DashBoard> {
                     context: context,
                     builder: (context) => _buildCreateProjectModal(context),
                   );
+
                 },
                 textStyle: TextStyle(color: Colors.white,fontSize: 16),
                 gradientColors: [Colors.transparent, Colors.transparent],
@@ -231,7 +234,7 @@ class _DashBoardState extends State<DashBoard> {
                   AppButton(
                     text: "Add Talents",
                     onPressed: () {
-
+                      slideRightWidget(newPage: Talents(), context: context);
                     },
                   ),
                   const SizedBox(height: 20),

@@ -2,9 +2,11 @@ import 'package:actapp/backend/api.dart';
 import 'package:actapp/routetransitions.dart';
 import 'package:actapp/widgets/appButton.dart';
 import 'package:actapp/widgets/appText.dart';
+import 'package:actapp/widgets/appTextFeild.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
@@ -27,6 +29,14 @@ class _TalentProfileState extends State<TalentProfile> {
 
   String? _selectedCategory = 'item1';
 
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
+
+  bool isOnline = false;
+  bool isOffline = false;
+
+  TextEditingController descriptionController = TextEditingController();
+
   final List<String> imgList = [
     "assets/images/contestant2.png",
     "assets/images/contestant3.png",
@@ -45,6 +55,7 @@ class _TalentProfileState extends State<TalentProfile> {
   ];
   final List<String> multiList = ['item1', 'item2', 'item3', 'item4', 'item5'];
   List<String> _selectedMultiList = [];
+  bool isLiked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +63,9 @@ class _TalentProfileState extends State<TalentProfile> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         actions: [
           IconButton(
@@ -175,7 +188,13 @@ class _TalentProfileState extends State<TalentProfile> {
                             ),
                           ],
                         ),
-                        Icon(Icons.favorite, color: Colors.green, size: 40),
+                        InkWell(
+                          onTap: (){
+                            setState(() {
+                              isLiked = !isLiked;
+                            });
+                          },
+                          child: Icon(isLiked ?  Icons.favorite : Icons.favorite_border, color: isLiked ? Colors.green : Colors.white, size: 40)),
                       ],
                     ),
                     SizedBox(height: 30),
@@ -413,7 +432,9 @@ class _TalentProfileState extends State<TalentProfile> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Divider(color: Colors.grey[400], thickness: 0.5),
               ),
-              ExpandableSection(title: "Basic Information", children: [
+              ExpandableSection(
+                title: "Basic Information",
+                children: [
                   Container(
                     padding: EdgeInsets.all(30),
                     decoration: BoxDecoration(
@@ -520,7 +541,7 @@ class _TalentProfileState extends State<TalentProfile> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: 20,),
+                            SizedBox(width: 20),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,25 +640,24 @@ class _TalentProfileState extends State<TalentProfile> {
                         SizedBox(height: 20),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Divider(color: Colors.grey[400], thickness: 0.5),
               ),
-              ExpandableSection(title: "Photos", children: [
-                  RandomMediaGrid(data: imgList,)
-                ],
+              ExpandableSection(
+                title: "Photos",
+                children: [RandomMediaGrid(data: imgList)],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Divider(color: Colors.grey[400], thickness: 0.5),
               ),
-              ExpandableSection(title: "Videos", children: [
-                  RandomMediaGrid(data: videoList)
-
-                ],
+              ExpandableSection(
+                title: "Videos",
+                children: [RandomMediaGrid(data: videoList)],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -651,9 +671,11 @@ class _TalentProfileState extends State<TalentProfile> {
                       ? "Invitattion Accepted"
                       : "Send Invitation",
                   onPressed: () {
-                    setState(() {
-                      _isAccepted = !_isAccepted;
-                    });
+                    showDialog(
+                      context: context,
+                      builder: (context) => _buildCreateProjectModal(context),
+                    );
+
                   },
                   borderRadius: 16,
                 ),
@@ -662,6 +684,177 @@ class _TalentProfileState extends State<TalentProfile> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCreateProjectModal(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: StatefulBuilder(
+        builder: (context, setStateDialog) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: API.subcolor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          size: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      AppText(
+                        'Send Invitation',
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      const SizedBox(height: 5),
+                      AppTextFeild(hintText: 'Production House Name'),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.calendar_today, size: 20),
+                                    SizedBox(width: 5),
+                                    AppText(
+                                      'Date',
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                API.dateField(
+                                  'Date',
+                                  'Select Date',
+                                  context,
+                                  (val) {
+                                    setState(() {
+                                      selectedDate = val;
+                                    });
+                                  },
+                                  (val) => val == null
+                                      ? ""
+                                      : DateFormat("dd/MM/yyyy").format(val),
+                                  selectedDate,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.access_time, size: 20),
+                                    SizedBox(width: 5),
+                                    AppText(
+                                      'Time',
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                API.timeField(
+                                  "Start Time",
+                                  "Select a time",
+                                  context,
+                                  (val) => setState(() => selectedTime = val),
+                                  (val) =>
+                                      val == null ? "" : val.format(context),
+                                  selectedTime,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          API.checkBoxField("Online", isOnline, (val) {
+                            setStateDialog(() {
+                              isOnline = val ?? false;
+                              if (isOnline) isOffline = false;
+                            });
+                          }),
+                          API.checkBoxField("Offline", isOffline, (val) {
+                            setStateDialog(() {
+                              isOffline = val ?? false;
+                              if (isOffline) isOnline = false;
+                            });
+                          }),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      AppText(
+                        'Offline Place',
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      const SizedBox(height: 5),
+                      AppTextFeild(hintText: 'Location'),
+                      const SizedBox(height: 20),
+                      AppText(
+                        'Short Description',
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      const SizedBox(height: 5),
+                      API.descriptionBox(hint: 'Add Description', controller: descriptionController),
+                      const SizedBox(height: 50),
+                      AppButton(text: "Send Invitation", onPressed: () {
+                        setState(() {
+                            _isAccepted = !_isAccepted;
+                          });
+                        Navigator.pop(context);
+                      }),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -722,9 +915,6 @@ class _ExpandableSectionState extends State<ExpandableSection> {
     );
   }
 }
-
-
-
 
 class RandomMediaGrid extends StatefulWidget {
   final List<String> data;
@@ -796,9 +986,9 @@ class _RandomMediaGridState extends State<RandomMediaGrid> {
                 future: _generateThumbnail(path),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ));
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
                   }
                   if (!snapshot.hasData) {
                     return const Icon(Icons.broken_image, size: 50);
@@ -806,7 +996,10 @@ class _RandomMediaGridState extends State<RandomMediaGrid> {
 
                   return GestureDetector(
                     onTap: () {
-                      slideRightWidget(newPage: VideoPlayerPage(videoPath: path), context: context);
+                      slideRightWidget(
+                        newPage: VideoPlayerPage(videoPath: path),
+                        context: context,
+                      );
                     },
                     child: Stack(
                       alignment: Alignment.center,
@@ -849,8 +1042,6 @@ class _RandomMediaGridState extends State<RandomMediaGrid> {
   }
 }
 
-
-
 class FullImagePage extends StatelessWidget {
   final String imagePath;
 
@@ -872,7 +1063,6 @@ class FullImagePage extends StatelessWidget {
     );
   }
 }
-
 
 class VideoPlayerPage extends StatefulWidget {
   final String videoPath;
@@ -934,8 +1124,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       ),
       floatingActionButton: _isInitialized
           ? FloatingActionButton(
-            backgroundColor: Colors.white,
-            shape: const CircleBorder(),
+              backgroundColor: Colors.white,
+              shape: const CircleBorder(),
               onPressed: () {
                 setState(() {
                   _controller.value.isPlaying

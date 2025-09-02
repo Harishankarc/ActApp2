@@ -1,4 +1,6 @@
 import 'package:actapp/backend/api.dart';
+import 'package:actapp/frontend/navigation/layout.dart';
+import 'package:actapp/routetransitions.dart';
 import 'package:actapp/widgets/appButton.dart';
 import 'package:actapp/widgets/appText.dart';
 import 'package:actapp/widgets/appTextFeild.dart';
@@ -141,6 +143,10 @@ class _OtpState extends State<Otp> {
                 text: 'Continue',
                 onPressed: () {
                   Navigator.pop(context);
+                  slideRightWidget(
+                    newPage: Layout(),
+                    context: context,
+                  );
                 },
               ),
             ),

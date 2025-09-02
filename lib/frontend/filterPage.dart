@@ -24,6 +24,10 @@ class _FilterPageState extends State<FilterPage> {
             children: [
               Row(
                 children: [
+                  InkWell(onTap: (){
+                    Navigator.pop(context);
+                  },child: Icon(Icons.arrow_back, color: Colors.white, size: 30)),
+                  const SizedBox(width: 12),
                   const CircleAvatar(radius: 24, backgroundColor: Colors.grey),
 
                   const SizedBox(width: 12),

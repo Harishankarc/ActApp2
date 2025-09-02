@@ -1,4 +1,5 @@
 import 'package:actapp/backend/api.dart';
+import 'package:actapp/frontend/auth/login2.dart';
 import 'package:actapp/routetransitions.dart';
 import 'package:actapp/widgets/appButton.dart';
 import 'package:actapp/widgets/appText.dart';
@@ -97,6 +98,10 @@ class _LoginState extends State<Login> {
                               //   newPage: VerificationOtp(),
                               //   context: context,
                               // );
+                              slideRightWidget(
+                                newPage: Login2(),
+                                context: context,
+                              );
                             },
                           ),
                           SizedBox(height: 5),
@@ -113,7 +118,7 @@ class _LoginState extends State<Login> {
                           ),
                           AppText.verysmalltitle(
                             'terms and conditions etc',
-                            color: Colors.grey.shade600, 
+                            color: Colors.grey.shade600,
                           ),
                         ],
                       ),

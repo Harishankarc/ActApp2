@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:actapp/widgets/appText.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -234,7 +235,10 @@ class API {
           isExpanded: true,
           hint: Text(
             hintText,
-            style:  TextStyle(fontSize: 14, color: version2 ? Colors.black : Colors.white),
+            style: TextStyle(
+              fontSize: 14,
+              color: version2 ? Colors.black : Colors.white,
+            ),
           ),
           items: items
               .map(
@@ -242,7 +246,10 @@ class API {
                   value: item,
                   child: Text(
                     item.toString(),
-                    style: TextStyle(fontSize: 14, color: version2 ? Colors.black : Colors.white),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: version2 ? Colors.black : Colors.white,
+                    ),
                   ),
                 ),
               )
@@ -274,7 +281,9 @@ class API {
                   offset: Offset(0, 1),
                 ),
               ],
-              border: Border.all(color: version2 ? Colors.transparent : Colors.white),
+              border: Border.all(
+                color: version2 ? Colors.transparent : Colors.white,
+              ),
             ),
           ),
           menuItemStyleData: const MenuItemStyleData(height: 40),
@@ -283,7 +292,7 @@ class API {
     );
   }
 
-   static Widget buildMultiSelect<T>({
+  static Widget buildMultiSelect<T>({
     required List<T> items,
     required List<T> selectedItems,
     required Function(List<T>) onConfirm,
@@ -308,7 +317,11 @@ class API {
         selectedColor: Colors.green.shade600,
         title: Text(
           hintText,
-          style: const TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         buttonIcon: Icon(
           Icons.arrow_drop_down_outlined,
@@ -322,7 +335,9 @@ class API {
         decoration: BoxDecoration(
           color: version2 ? Colors.transparent : Color(0xFFF5F5F5),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: version2 ? Colors.black : Colors.transparent),
+          border: Border.all(
+            color: version2 ? Colors.black : Colors.transparent,
+          ),
         ),
         chipDisplay: MultiSelectChipDisplay(
           chipColor: Colors.grey.shade200,
@@ -331,5 +346,190 @@ class API {
       ),
     );
   }
+
+  static Widget dateField<T>(
+    String title,
+    String hintText,
+    BuildContext context,
+    Function(DateTime? value) onChanged,
+    String Function(DateTime? value) dateFormat,
+    DateTime? currentValue,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          readOnly: true,
+          controller: TextEditingController(
+            text: currentValue == null ? '' : dateFormat(currentValue),
+          ),
+          style: const TextStyle(color: Colors.black, fontSize: 14),
+          decoration: InputDecoration(
+            hintText: hintText,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: API.subcolor),
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          onTap: () async {
+            final picked = await showDatePicker(
+              context: context,
+              initialDate: currentValue ?? DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime(2100),
+              builder: (context, child) {
+                return Theme(
+                  data: ThemeData.dark().copyWith(
+                    colorScheme: ColorScheme.dark(
+                      primary: API.color6,
+                      onPrimary: Colors.white,
+                      surface: Colors.white,
+                      onSurface: Colors.black,
+                    ),
+                    dialogBackgroundColor: Colors.black,
+                    textButtonTheme: TextButtonThemeData(
+                      style: TextButton.styleFrom(foregroundColor: API.color6),
+                    ),
+                  ),
+                  child: child!,
+                );
+              },
+            );
+            if (picked != null) {
+              onChanged(picked);
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  static Widget timeField(
+    String title,
+    String hintText,
+    BuildContext context,
+    Function(TimeOfDay? value) onChanged,
+    String Function(TimeOfDay? value) timeFormat,
+    TimeOfDay? currentValue,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          readOnly: true,
+          controller: TextEditingController(
+            text: currentValue == null ? '' : timeFormat(currentValue),
+          ),
+          style: const TextStyle(color: Colors.black, fontSize: 14),
+          decoration: InputDecoration(
+            hintText: hintText,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: API.subcolor),
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          onTap: () async {
+            final picked = await showTimePicker(
+              context: context,
+              initialTime: currentValue ?? TimeOfDay.now(),
+              builder: (context, child) {
+                return Theme(
+                  data: ThemeData.dark().copyWith(
+                    colorScheme: ColorScheme.dark(
+                      primary: API.color6,
+                      onPrimary: Colors.white,
+                      surface: Colors.white,
+                      onSurface: Colors.black,
+                    ),
+                    dialogBackgroundColor: Colors.black,
+                    textButtonTheme: TextButtonThemeData(
+                      style: TextButton.styleFrom(foregroundColor: API.appcolor),
+                    ),
+                  ),
+                  child: child!,
+                );
+              },
+            );
+            if (picked != null) {
+              onChanged(picked);
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  static Widget checkBoxField(
+    String title,
+    bool value,
+    Function(bool? value) onChanged,
+  ) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AppText(
+          title,
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+        const SizedBox(width: 5),
+        Transform.scale(
+          scale: 0.9,
+          child: Checkbox(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(3),
+            ),
+            activeColor: Colors.black,
+            checkColor: Colors.white,
+            value: value,
+            onChanged: onChanged,
+          ),
+        ),
+      ],
+    );
+  }
+  static Widget descriptionBox({
+    required String hint,
+    required TextEditingController controller,
+    int minLines = 3,
+    int maxLines = 5,
+  }) {
+    return TextFormField(
+      controller: controller,
+      minLines: minLines,
+      maxLines: maxLines,
+      keyboardType: TextInputType.multiline,
+      style: const TextStyle(fontSize: 14, color: Colors.black),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.black),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.black, width: 1.2),
+        ),
+      ),
+    );
+  }
+
+
 
 }

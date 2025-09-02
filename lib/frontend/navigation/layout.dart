@@ -15,14 +15,27 @@ class Layout extends StatefulWidget {
 class _LayoutState extends State<Layout> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    DashBoard(),
-    Project(),
-    Profile(),
-  ];
+
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _widgetOptions = <Widget>[
+      DashBoard(),
+      Project(
+        onBack: () {
+          setState(() {
+            _selectedIndex = 0;
+          });
+        },
+      ),
+      Profile(
+        onBack: () {
+          setState(() {
+            _selectedIndex = 0;
+          });
+        },
+      ),
+    ];
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(

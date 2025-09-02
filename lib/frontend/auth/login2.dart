@@ -1,4 +1,5 @@
 import 'package:actapp/backend/api.dart';
+import 'package:actapp/frontend/auth/otp.dart';
 import 'package:actapp/routetransitions.dart';
 import 'package:actapp/widgets/appButton.dart';
 import 'package:actapp/widgets/appText.dart';
@@ -113,10 +114,10 @@ class _Login2State extends State<Login2> {
                           AppButton(
                             text: "Next",
                             onPressed: () {
-                              // slideRightWidget(
-                              //   newPage: VerificationOtp(),
-                              //   context: context,
-                              // );
+                              slideRightWidget(
+                                newPage: Otp(),
+                                context: context,
+                              );
                             },
                           ),
                         ],
